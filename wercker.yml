@@ -1,38 +1,13 @@
 box: wercker-labs/docker
+no-response-timeout: 12
 build:
-  steps:
-    - install-packages:
-        packages: lxc-docker make
-    - script:
-        name: print the docker version
-        code: docker version
-    - script:
-        name: print system-wide docker info
-        code: docker info
-    - script:
-        name: build buildstep docker image
-        code: docker build -t buildstep .
-    - script:
-        name: run go tests
-        code: tests/run_tests go
-    - script:
-        name: run java tests
-        code: tests/run_tests java
-    - script:
-        name: run multi tests
-        code: tests/run_tests multi
-    - script:
-        name: run nodejs-express tests
-        code: tests/run_tests nodejs-express
-    - script:
-        name: run php tests
-        code: tests/run_tests php
-    - script:
-        name: run python-flask tests
-        code: tests/run_tests python-flask
-    - script:
-        name: run ruby tests
-        code: tests/run_tests ruby
-    - script:
-        name: run static tests
-        code: tests/run_tests static
+    steps:
+        - install-packages:
+            packages: build-essential bundler
+        - bundle-install
+        - script:
+            name: create buildstep image
+            code: docker build -t progrium/buildstep .
+        - script:
+            name: run tests
+            code: bundle exec cucumber --exclude features/apps

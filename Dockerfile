@@ -1,8 +1,12 @@
-FROM ubuntu:12.04
-MAINTAINER Kamil Trzciński <ayufan@ayufan.eu>
+FROM progrium/cedarish:cedar14
+MAINTAINER progrium "progrium@gmail.com"
 
-ADD ./stack/ /build
-RUN /build/prepare
+ADD ./stack/configs/etc-profile /etc/profile
+
+ADD ./builder/ /build
+RUN xargs -L 1 /build/install-buildpack /tmp/buildpacks < /build/config/buildpacks.txt
+
+RUN gem install foreman
 
 # fix php buildpack, source: https://github.com/deis/heroku-buildpack-php/commit/d305d7eb5f45959b54e1b9729b0cd36685c8126d
 RUN sed -i 's|^;listen.mode = 0666|listen.mode = 0666|g' /build/buildpacks/*/conf/php/php-fpm.conf
