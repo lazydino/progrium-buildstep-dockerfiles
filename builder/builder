@@ -62,7 +62,7 @@ case "\$(basename \$0)" in
     ;;
 esac
 
-setuidgid $user_name \$(eval echo \${command})
+exec setuidgid $user_name \$(eval echo \${command})
 EOF
 
 chmod +x /start
