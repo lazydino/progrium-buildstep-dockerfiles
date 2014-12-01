@@ -86,7 +86,7 @@ for file in $app_root/.profile.d/*; do source \$file; done
 hash -r
 cd $app_root
 if [[ -f Procfile ]]; then
-  exec foreman start --procfile=Procfile --env=$build_root/.profile.d/null_env "\$@"
+  exec foreman start --procfile=Procfile --env=.profile.d/null_env "\$@"
 else
   IMAGE="\$1"
   [[ "\$IMAGE" == "" ]] && IMAGE=web
