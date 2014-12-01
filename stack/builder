@@ -13,6 +13,7 @@ selected_buildpack=
 
 mkdir -p $cache_root
 mkdir -p $build_root/.profile.d
+touch $build_root/.profile.d/null_env
 
 # This is to get a custom buildpack. Probably should use profile.d though
 [[ -f "$app_root/.env" ]] && . "$app_root/.env"
@@ -85,7 +86,7 @@ for file in $app_root/.profile.d/*; do source \$file; done
 hash -r
 cd $app_root
 if [[ -f Procfile ]]; then
-  exec foreman start --procfile=Procfile "\$@"
+  exec foreman start --procfile=Procfile --env=$build_root/.profile.d/null_env "\$@"
 else
   IMAGE="\$1"
   [[ "\$IMAGE" == "" ]] && IMAGE=web
