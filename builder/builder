@@ -8,21 +8,39 @@ mkdir -p $cache_root
 mkdir -p $buildpack_root
 mkdir -p $build_root/.profile.d
 
-user_id=$((RANDOM+1000))
-user_name="u${user_id}"
+# Use 1000 as default user
+if [[ -n "$DOKKU_RANDOM_USER_ID" ]]; then
+  DOKKU_USER_ID="${DOKKU_USER_ID:-$((RANDOM+1000))}"
+else
+  DOKKU_USER_ID="${DOKKU_USER_ID:-1000}"
+fi
 
-# Create a random user
-/usr/sbin/addgroup --quiet --gid $user_id $user_name
-/usr/sbin/adduser --shell /bin/bash \
-                  --disabled-password \
-                  --force-badname \
-                  --no-create-home \
-                  --uid $user_id \
-                  --gid $user_id \
-                  --gecos '' \
-                  --quiet \
-                  --home $app_dir \
-                  $user_name
+if [[ "$DOKKU_USER_ID" -ne "0" ]]; then
+  user_id="$DOKKU_USER_ID"
+  user_name="u${user_id}"
+
+  echo $'\e[1G----->' "Using $user_name to run an application"
+
+  # Create a random user
+  /usr/sbin/addgroup --quiet --gid $user_id $user_name
+  /usr/sbin/adduser --shell /bin/bash \
+                    --disabled-password \
+                    --force-badname \
+                    --no-create-home \
+                    --uid $user_id \
+                    --gid $user_id \
+                    --gecos '' \
+                    --quiet \
+                    --home $app_dir \
+                    $user_name
+else
+  user_id="0"
+  user_name="root"
+
+  echo $'\e[1G----->' " Using ROOT to run an application (potentially insecure)"
+
+  /usr/sbin/usermod --home $app_dir root
+fi
 
 # Grant the user access to all required paths before
 # running the compile phase as non-privileged user.

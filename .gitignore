@@ -1,2 +1,4 @@
 *.tgz
 build-dir/buildpacks/*
+.bundle/
+vendor/
