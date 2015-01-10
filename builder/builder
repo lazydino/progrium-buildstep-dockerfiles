@@ -38,8 +38,6 @@ else
   user_name="root"
 
   echo $'\e[1G----->' " Using ROOT to run an application (potentially insecure)"
-
-  /usr/sbin/usermod --home $app_dir root
 fi
 
 # Grant the user access to all required paths before
