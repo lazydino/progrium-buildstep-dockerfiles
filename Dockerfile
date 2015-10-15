@@ -1,5 +1,5 @@
 FROM progrium/cedarish:cedar14
-MAINTAINER Jeff Lindsay <progrium@gmail.com>
+MAINTAINER Reggie Chen <reggie@magnetargames.com>
 
 ADD ./stack/configs/etc-profile /etc/profile
 
